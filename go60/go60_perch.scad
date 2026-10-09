@@ -1,7 +1,6 @@
 
-// MoErgo Go60 Perch - V1.1
-// Fix: cross rails intentionally overlap deeply into both side pads
-// so the exported STL is one connected solid.
+// MoErgo Go60 Perch - V1.2
+// Keyboard positioning base with a centered portrait phone cradle.
 //
 // Units: mm
 
@@ -19,6 +18,18 @@ pocket_depth  = 2.0;
 base_thickness = 4.5;
 pad_border = 4.0;
 rail_width = 8.0;
+
+// ---------- Phone cradle ----------
+// The 18 mm slot leaves room for a phone up to 16 mm thick with its case.
+phone_width = 82;
+phone_slot_depth = 18;
+phone_lip_width = 48;
+phone_lip_thickness = 6;
+phone_lip_height = 10;
+phone_back_width = 64;
+phone_back_thickness = 6;
+phone_back_height = 48;
+phone_recline_deg = 15;
 
 // ---------- Positioning ----------
 splay_deg = 15;
@@ -77,14 +88,45 @@ module perch_outline_2d() {
     }
 }
 
-difference() {
+module phone_cradle() {
+    // The deck joins the rear rail; the narrow stem joins the front rail.
+    // Its front edge stays inside the gap between the keyboard pockets.
     linear_extrude(height=base_thickness)
-        perch_outline_2d();
-
-    // Shallow locating pockets
-    translate([0,0,base_thickness-pocket_depth])
-        linear_extrude(height=pocket_depth+0.2) {
-            pocket2d(left_cx,   splay_deg);
-            pocket2d(right_cx, -splay_deg);
+        union() {
+            translate([-phone_width/2, -18]) square([phone_width, 52]);
+            translate([-10, front_rail_y]) square([20, 20]);
         }
+
+    // The front lip keeps the phone's bottom edge in the slot.
+    translate([-phone_lip_width/2,
+               -phone_slot_depth/2-phone_lip_thickness,
+               base_thickness-0.1])
+        cube([phone_lip_width, phone_lip_thickness,
+              phone_lip_height+0.1]);
+
+    // A shallow recline prints upright without support material.
+    hull() {
+        translate([-phone_back_width/2, phone_slot_depth/2,
+                   base_thickness-0.1])
+            cube([phone_back_width, phone_back_thickness, 1]);
+        translate([-phone_back_width/2,
+                   phone_slot_depth/2 + tan(phone_recline_deg)*phone_back_height,
+                   base_thickness+phone_back_height-1])
+            cube([phone_back_width, phone_back_thickness, 1]);
+    }
+}
+
+union() {
+    difference() {
+        linear_extrude(height=base_thickness)
+            perch_outline_2d();
+
+        // Shallow locating pockets
+        translate([0,0,base_thickness-pocket_depth])
+            linear_extrude(height=pocket_depth+0.2) {
+                pocket2d(left_cx,   splay_deg);
+                pocket2d(right_cx, -splay_deg);
+            }
+    }
+    phone_cradle();
 }
