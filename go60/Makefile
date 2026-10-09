@@ -22,7 +22,7 @@ stl: $(STL)
 3mf: $(THREE_MF)
 
 view:
-	LIBGL_ALWAYS_SOFTWARE=1 $(OPENSCAD) $(SOURCE)
+	$(OPENSCAD) $(SOURCE)
 
 $(OUT_DIR):
 	mkdir -p "$@"
