@@ -36,6 +36,7 @@ phone_recline_deg = 15;
 // ---------- Positioning ----------
 splay_deg = 15;
 near_inner_gap = 73.0;
+phone_forward = 4.0;
 
 // Crossbar Y locations
 rear_rail_y  = 34;
@@ -92,17 +93,29 @@ module perch_outline_2d() {
 
 module phone_cradle() {
     // Clipped deck corners echo the splayed keyboard pads. The deck joins
-    // the rear rail, and the narrow stem joins the front rail.
-    linear_extrude(height=base_thickness)
-        union() {
-            polygon([
-                [-phone_width/2+9, -18], [phone_width/2-9, -18],
-                [ phone_width/2, -9],   [phone_width/2, 25],
-                [ phone_width/2-9, 34],[-phone_width/2+9, 34],
-                [-phone_width/2, 25],  [-phone_width/2, -9]
-            ]);
-            translate([-10, front_rail_y]) square([20, 20]);
-        }
+    // one rail, and the narrow stem joins the other.
+    difference() {
+        linear_extrude(height=base_thickness)
+            union() {
+                polygon([
+                    [-phone_width/2+9, -18], [phone_width/2-9, -18],
+                    [ phone_width/2, -9],   [phone_width/2, 25+phone_forward],
+                    [ phone_width/2-9, 34+phone_forward],
+                    [-phone_width/2+9, 34+phone_forward],
+                    [-phone_width/2, 25+phone_forward],
+                    [-phone_width/2, -9]
+                ]);
+                translate([-10, front_rail_y]) square([20, 20]);
+            }
+
+        // Shallow accents on the shoulders echo the angled backrest slots.
+        translate([0, 0, base_thickness-0.6])
+            linear_extrude(height=0.7)
+                for (side = [-1, 1])
+                    scale([side, 1])
+                        polygon([[33, -4], [35, -4],
+                                 [38, 18], [36, 18]]);
+    }
 
     // Sloped shoulders give the shorter lip a lighter profile.
     hull() {
@@ -153,5 +166,7 @@ union() {
                 pocket2d(right_cx, -splay_deg);
             }
     }
-    phone_cradle();
+    // Face the phone toward the opposite side and bring it closer to the user.
+    translate([0, phone_forward, 0])
+        rotate([0, 0, 180]) phone_cradle();
 }
