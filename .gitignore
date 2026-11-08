@@ -1,0 +1,7 @@
+# Windows download metadata
+*:Zone.Identifier
+
+# Local Glove80 reference assets are for measurement, not redistribution.
+/glove80/12degree_ondesk.stl
+/glove80/22degree_ondesk.stl
+/glove80/reference_view.scad

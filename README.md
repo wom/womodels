@@ -10,55 +10,81 @@
 +------------------------------------------------------------------+
 ```
 
-This repository is a growing workshop for useful, buildable designs. Each
-model lives in its own directory with its editable source and build steps.
+Each keyboard perch has editable source, a Makefile, and ready-to-print files
+in its own directory.
 
 ## Models
 
-| Model | What it is | Source |
+| Model | Description | Files |
 | --- | --- | --- |
-| Go60 Perch | Keyboard positioning base with a centered phone cradle | [go60/go60_perch.scad](go60/go60_perch.scad) |
+| Glove80 Perch | One-piece 22-degree on-desk tenting frame with a central phone cradle | [STL](glove80/build/glove80_perch.stl) · [source](glove80/glove80_perch.scad) · [details](glove80/README.md) |
+| Go60 Perch | Keyboard positioning base with a centered phone cradle | [STL](go60/build/go60_perch.stl) · [source](go60/go60_perch.scad) |
 
-More models, print files, renders, and notes will be added over time.
+### Glove80 Perch
 
-## Build the Go60 Perch
+The four angled sockets locate the two inner legs of each keyboard half. The
+outer feet rest on the desk. The cradle includes a rear cable channel and a
+recessed mark on its phone-facing side.
 
-Requirements: [OpenSCAD](https://openscad.org/) and `make`.
+| Overall render | Front mark detail |
+| --- | --- |
+| ![Glove80 perch overview](glove80/build/glove80_perch.png) | ![Recessed mark on the phone-facing backrest](glove80/build/glove80_logo_detail.png) |
+
+| Socket layout | Phone fit estimate |
+| --- | --- |
+| ![Top view of Glove80 perch](glove80/build/glove80_perch_top.png) | ![Translucent phone envelope in the Glove80 perch](glove80/build/glove80_phone_fit.png) |
+
+The translucent block shows an **estimated 84 × 15 × 168 mm phone and case**.
+The frame measures about **179.4 × 117.6 × 56.1 mm** and fits on a 220 × 220 mm
+bed. The phone rests about 4.5 mm above the desk; check clearance for your
+charging plug. See the [Glove80 details](glove80/README.md) for socket dimensions
+and fit guidance.
+
+### Go60 Perch
+
+![Go60 perch render](go60/build/go60_perch.png)
+
+The [Go60 source](go60/go60_perch.scad) and [printable STL](go60/build/go60_perch.stl)
+are in `go60/`. The model is also [published on Printables](https://www.printables.com/model/1881381-go60-perch).
+
+## Build from source
+
+Install [OpenSCAD](https://openscad.org/) and `make`. OpenSCAD must be available
+as `openscad` on your PATH. To print a checked-in STL, you only need a slicer;
+OpenSCAD and `make` are for rebuilding or editing the model.
 
 ```sh
-cd go60
-make
+make -C glove80                # Glove80 STL and overall render
+make -C glove80 top logo phone # Additional Glove80 views
+make -C go60                   # Go60 STL and render
 ```
 
-The default build exports a rendered PNG and an STL to `go60/build/`.
+Run `make -C glove80 help` or `make -C go60 help` for the other export and
+preview targets, including 3MF. Generated files go into each model's `build/`
+directory.
 
-```sh
-make preview  # quick preview image
-make stl      # STL export
-make 3mf      # 3MF export
-make view     # open in the OpenSCAD GUI
-make clean    # remove generated files
-```
+## Print the Glove80 Perch
 
-From the repository root, for example, run `make -C go60 stl`.
+Place the [Glove80 STL](glove80/build/glove80_perch.stl) flat on its frame. For
+PLA with a 0.4 mm nozzle, a useful starting point is **0.20 mm layers, 4
+perimeters, 5 top and bottom layers, and 15% gyroid infill**. Supports are not
+needed. Add a brim only if the foot pads lift on your printer. Use your tested
+PLA temperature and speed profile.
+
+The socket openings are 12.5 mm. Check your feet or leg adapters against the
+[dimensions and fit guidance](glove80/README.md#dimensions-and-fit) before
+printing.
 
 ## Repository map
 
 ```text
 .
-|-- go60/
-|   |-- go60_perch.scad   # editable model
-|   |-- Makefile          # render and export targets
-|   `-- build/            # generated files
+|-- glove80/    # OpenSCAD source, artwork, build steps, STL, and renders
+|-- go60/       # OpenSCAD source, build steps, STL, and render
+|-- houseCup/   # House Cup models and print notes
 |-- LICENSE
 `-- README.md
 ```
-
-## Adding a model
-
-Give each design its own directory. Keep its editable source and build steps
-with the model, and put generated exports in that model's `build/` directory.
-Add the model to the table above so it is easy to find.
 
 ## License
 
